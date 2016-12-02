@@ -1,8 +1,8 @@
 package com.jam.trading;
 
-import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.Exchange;
+import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.dto.account.AccountInfo;
-import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.kraken.KrakenExchange;
 import org.knowm.xchange.service.polling.account.PollingAccountService;
 import org.knowm.xchange.service.polling.marketdata.PollingMarketDataService;
@@ -15,11 +15,9 @@ import java.io.IOException;
  */
 public class App 
 {
-    public static void main( String[] args )
-    {
+    public static void main( String[] args ) throws IOException {
 
-        KrakenExchange kraken = new KrakenExchange();
-
+        Exchange kraken = createExchange();
         PollingMarketDataService marketDataService = kraken.getPollingMarketDataService();
         PollingAccountService accountService = kraken.getPollingAccountService();
         boolean success = false;
@@ -31,15 +29,18 @@ public class App
             System.out.println("try again.");
         }
 
-        Ticker ticker = null;
-        try {
-            ticker = marketDataService.getTicker(CurrencyPair.ETH_BTC);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         System.out.println(accountInfo.getWallet().getBalances().toString());
 
 
+    }
+
+    public static Exchange createExchange() {
+        //TODO ask for these things interactively, or grab a file.
+        Exchange krakenExchange = ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class.getName());
+        krakenExchange.getExchangeSpecification().setApiKey("API Key");
+        krakenExchange.getExchangeSpecification().setSecretKey("Secret==");
+        krakenExchange.getExchangeSpecification().setUserName("user");
+        krakenExchange.applySpecification(krakenExchange.getExchangeSpecification());
+        return krakenExchange;
     }
 }

@@ -5,7 +5,6 @@ import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.kraken.KrakenExchange;
 import org.knowm.xchange.service.polling.account.PollingAccountService;
-import org.knowm.xchange.service.polling.marketdata.PollingMarketDataService;
 
 import java.io.IOException;
 
@@ -18,17 +17,8 @@ public class App
     public static void main( String[] args ) throws IOException {
 
         Exchange kraken = createExchange();
-        PollingMarketDataService marketDataService = kraken.getPollingMarketDataService();
         PollingAccountService accountService = kraken.getPollingAccountService();
-        boolean success = false;
-        AccountInfo accountInfo = null;
-        while (!success) try {
-           accountInfo =  accountService.getAccountInfo();
-            success = true;
-        } catch (IOException e) {
-            System.out.println("try again.");
-        }
-
+        AccountInfo accountInfo = accountService.getAccountInfo();
         System.out.println(accountInfo.getWallet().getBalances().toString());
 
 

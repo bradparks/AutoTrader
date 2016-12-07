@@ -6,6 +6,7 @@ import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.kraken.KrakenExchange;
 import org.knowm.xchange.service.polling.account.PollingAccountService;
 
+import javax.swing.*;
 import java.io.IOException;
 
 /**
@@ -25,11 +26,11 @@ public class App
     }
 
     public static Exchange createExchange() {
-        //TODO ask for these things interactively, or grab a file.
+        //TODO ask for these things interactively, or grab a file. Secure everything with PBE.
         Exchange krakenExchange = ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class.getName());
-        krakenExchange.getExchangeSpecification().setApiKey("API Key");
-        krakenExchange.getExchangeSpecification().setSecretKey("Secret==");
-        krakenExchange.getExchangeSpecification().setUserName("user");
+        krakenExchange.getExchangeSpecification().setApiKey(JOptionPane.showInputDialog("Insert API key here"));
+        krakenExchange.getExchangeSpecification().setSecretKey(JOptionPane.showInputDialog("Insert SecretKey here"));
+        krakenExchange.getExchangeSpecification().setUserName(JOptionPane.showInputDialog("Insert User Name here"));
         krakenExchange.applySpecification(krakenExchange.getExchangeSpecification());
         return krakenExchange;
     }

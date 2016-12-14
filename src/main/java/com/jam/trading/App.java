@@ -5,9 +5,9 @@ import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.dto.account.AccountInfo;
 import org.knowm.xchange.kraken.KrakenExchange;
 import org.knowm.xchange.service.polling.account.PollingAccountService;
+import org.knowm.xchange.service.polling.trade.PollingTradeService;
 
 import javax.swing.*;
-import java.io.IOException;
 
 /**
  * Hello world!
@@ -15,18 +15,34 @@ import java.io.IOException;
  */
 public class App 
 {
-    public static void main( String[] args ) throws IOException {
+
+    private static AccountInfo accountInfo;
+    private static PrettyWallet prettyWallet;
+
+    public static void main(String[] args ) throws Exception {
 
         Exchange kraken = createExchange();
         PollingAccountService accountService = kraken.getPollingAccountService();
-        AccountInfo accountInfo = accountService.getAccountInfo();
-        System.out.println(accountInfo.getWallet().getBalances().toString());
+        accountInfo = accountService.getAccountInfo();
+        prettyWallet = new PrettyWallet();
+        PollingTradeService tradeService = kraken.getPollingTradeService();
+        AutoTrader autoTrader = new AutoTrader(tradeService,accountInfo,prettyWallet);
+
+            try {
+                printPrettyBalance();
+                autoTrader.run();
+            } catch (Exception e){
+                e.printStackTrace();
+            }
 
 
     }
 
+    private static void printPrettyBalance() {
+        prettyWallet.prettyBalance(accountInfo.getWallet().getBalances());
+    }
+
     public static Exchange createExchange() {
-        //TODO ask for these things interactively, or grab a file. Secure everything with PBE.
         Exchange krakenExchange = ExchangeFactory.INSTANCE.createExchange(KrakenExchange.class.getName());
         krakenExchange.getExchangeSpecification().setApiKey(JOptionPane.showInputDialog("Insert API key here"));
         krakenExchange.getExchangeSpecification().setSecretKey(JOptionPane.showInputDialog("Insert SecretKey here"));

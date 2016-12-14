@@ -36,5 +36,10 @@
       <artifactId>xchange-kraken</artifactId>
       <version>4.1.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-collections</artifactId>
+      <version>LATEST</version>
+    </dependency>
   </dependencies>
 </project>

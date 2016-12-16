@@ -49,6 +49,7 @@ public class AutoTrader implements Runnable{
         while (safe){
 
             //TRADE
+            wallet.prettyBalance(newBalances);
         }
 
     }

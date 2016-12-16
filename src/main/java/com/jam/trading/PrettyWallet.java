@@ -11,19 +11,28 @@ import java.util.Map;
  */
 public class PrettyWallet {
 
+    Map<Currency,Balance> oldBalanceMap;
+
     public PrettyWallet(){
 
     }
 
-    public static void prettyBalance(Map<Currency, Balance> currencyBalanceMap) {
+    public void prettyBalance(Map<Currency, Balance> currencyBalanceMap) {
         ArrayList<String> out = new ArrayList<String>(currencyBalanceMap.size());
+
         for (Balance balance:
                 currencyBalanceMap.values()) {
-            String message = "Currency: "+balance.getCurrency().toString()+"\n";
+            Currency balanceCurrency = balance.getCurrency();
+            String message = "Currency: "+ balanceCurrency.toString()+"\n";
             message += " Tradable: "+String.valueOf(balance.getAvailableForWithdrawal()+"\n");
-            message += " Total:"+balance.getTotal()+"\n";
+            //message += " Total: "+balance.getTotal()+"\n";
+            message += " Changed this round: "+balance
+                    .getAvailableForWithdrawal().compareTo(
+                            oldBalanceMap.get(balanceCurrency)
+                            .getAvailableForWithdrawal())+"\n";
             out.add(message);
         }
         System.out.println(out);
+        oldBalanceMap.putAll(currencyBalanceMap);
     }
 }
